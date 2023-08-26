@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCÇudoku</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family:Verdana, Geneva, Tahoma, sans-serif;
+            background-color: ghostwhite;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .grid {
+            display: grid;
+            gap: 2.5%;
+            border-radius: 5px;
+        }
+
+        .cell {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            line-height: 40px;
+            font-size: 18px;
+            border-radius: 5px;
+        }
+
+        input[type="file"] {
+            margin: 20px 0;
+        }
+
+        footer {
+            bottom: 0;
+            height: 70px;
+            left: 0;
+            position: absolute;
+            width: 100%;
+            background-color: palevioletred;
+            text-align: center;
+            vertical-align: middle;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="row"></div>
+    <h1>Visualizador DCÇudoku</h1>
+    <p>Carga aquí el archivo .json retornado por el programa parser.py según las instrucciones del enunciado. </p>
+    <input type="file" id="jsonInput" accept=".json" />
+    <div id="grid" class="grid"></div>
+    <script>
+        document.getElementById('jsonInput').addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            const data = await readJSON(file);
+            drawGrid(data);
+        });
+
+        async function readJSON(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = event => {
+                    try {
+                        const json = JSON.parse(event.target.result);
+                        resolve(json);
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                reader.onerror = error => reject(error);
+                reader.readAsText(file);
+            });
+        }
+
+        function createGrid(gridSize) {
+            const grid = document.createElement('div');
+            grid.classList.add('grid');
+            grid.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+            grid.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
+            return grid;
+        }
+
+        function createCell(value, color) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.textContent = value;
+            cell.style.backgroundColor = color;
+            return cell;
+        }
+
+        function drawGrid(data) {
+            const gridSize = data.gridSize;
+            const grid = createGrid(gridSize);
+
+            const colorMap = {}; // Mapeo de colores por valor
+
+            for (let x = 0; x < gridSize; x++) {
+                for (let y = 0; y < gridSize; y++) {
+                    const cellData = data.soluciones.find(cell => cell[0] === x && cell[1] === y);
+                    if (cellData) {
+                        const value = cellData[2];
+                        const figure = cellData[4];
+                        if (!colorMap[figure]) {
+                            // Si no existe un color asignado para este valor, asigna uno nuevo
+                            colorMap[figure] = getRandomColor();
+                        }
+                        const color = colorMap[figure];
+                        const cell = createCell(value, color);
+                        grid.appendChild(cell);
+                    } else {
+                        const cell = createCell('', '');
+                        grid.appendChild(cell);
+                    }
+                }
+            }
+
+            document.getElementById('grid').innerHTML = '';
+            document.getElementById('grid').appendChild(grid);
+        }
+
+        // Genera un color aleatorio en formato hexadecimal
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+    </script>
+    <footer>
+        <p>Hecho con ♥ por el equipo IIC2613</p>
+    </footer>
+</body>
+</html>
