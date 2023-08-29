@@ -10,8 +10,8 @@ action(wait).
 action(liftBox).
 
 % Un robot puede desplazarse en las direcciones de: arriba, abajo, izquierda, derecha y esperar
-robotOn(R, X, Y + 1, T + 1) :- exec(R, up, T), robotOn(R, X, Y, T), time(T + 1).
-robotOn(R, X, Y - 1, T + 1) :- exec(R, down, T), robotOn(R, X, Y, T), time(T + 1).
+robotOn(R, X, Y - 1, T + 1) :- exec(R, up, T), robotOn(R, X, Y, T), time(T + 1).
+robotOn(R, X, Y + 1, T + 1) :- exec(R, down, T), robotOn(R, X, Y, T), time(T + 1).
 robotOn(R, X - 1, Y, T + 1) :- exec(R, left, T), robotOn(R, X, Y, T), time(T + 1).
 robotOn(R, X + 1, Y, T + 1) :- exec(R, right, T), robotOn(R, X, Y, T), time(T + 1).
 robotOn(R, X, Y, T + 1) :- exec(R, wait, T), robotOn(R, X, Y, T), time(T + 1).
