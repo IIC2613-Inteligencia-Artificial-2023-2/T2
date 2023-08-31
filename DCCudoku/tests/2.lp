@@ -23,8 +23,8 @@ bloque(6,2,1,0,4).
 % Figura 3
 % 2 3 4
 bloque(7,3,0,0,2).
-bloque(8,3,1,0,3).
-bloque(9,3,2,0,4).
+bloque(8,3,0,1,3).
+bloque(9,3,0,2,4).
 
 % Figura 4
 % 5 1
