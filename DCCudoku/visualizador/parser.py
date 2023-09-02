@@ -10,7 +10,7 @@ def parse_clingo_output():
     match = grid_size_pattern.search(content)
 
     if match:
-        n = int(match.group(1))  # Extraer el valor de N
+        n = int(max(re.findall(grid_size_pattern, content), key = lambda x: x[0])[0]) + 1  # Extraer el valor de N
     else:
         # Manejar el caso de que no haya N
         print("Grid size not found in the content.")
